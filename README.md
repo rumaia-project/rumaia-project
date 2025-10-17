@@ -85,7 +85,7 @@
 
 **Legenda:** 🟢 Active Development | 🟡 In Progress | 🔴 Planned
 
-📅 **Last Updated:** 15 Oktober 2025  
+📅 **Last Updated:** 15 Oktober 2025
 🏆 **Target:** Hackathon OJK x Ekraf 2025
 
 ---
@@ -97,7 +97,7 @@ rumaia-project/
 ├── 📱 lib/
 │   ├── 🎯 main.dart
 │   ├── 📺 screens/
-│   │   ├── 👤 user/              # Gerry, Raul
+│   │   ├── 👤 user/              # Gerry, Raul, Ilham
 │   │   ├── 💰 investor/          # Gerry, Raul
 │   │   ├── 🏗️ developer/         # Naufal, Bian
 │   │   ├── ⚙️ admin/             # Bian, Dedek Hanna
