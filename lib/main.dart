@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rumaia_project/widgets/developer/botnavbar.dart';
+import 'package:rumaia_project/screens/user/user_main_screen.dart';
 
 void main() {
   runApp(const RumaiaApp());
@@ -17,7 +17,7 @@ class RumaiaApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         useMaterial3: true,
       ),
-      home: const BotnavbarScreen(),
+      home: const UserMainScreen(),
     );
   }
 }
