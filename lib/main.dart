@@ -1,4 +1,7 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
+import 'package:rumaia_project/screens/auth/role_switcher.dart';
 import 'package:rumaia_project/screens/user/home_screen.dart';
 import 'package:rumaia_project/screens/user/my_request_screen.dart';
 import 'package:rumaia_project/screens/user/profile_screen.dart';
@@ -11,6 +14,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,12 +24,14 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MainNavigation(),
+      home: RoleSwitcherScreen(),
     );
   }
 }
 
 class MainNavigation extends StatefulWidget {
+  const MainNavigation({super.key});
+
   @override
   _MainNavigationState createState() => _MainNavigationState();
 }
