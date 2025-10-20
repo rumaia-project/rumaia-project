@@ -1,11 +1,11 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
-import 'package:rumaia_project/screens/user/property_list.dart';
-import 'property_request_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   final Function(int)? onNavigate;
 
-  const HomeScreen({Key? key, this.onNavigate}) : super(key: key);
+  const HomeScreen({super.key, this.onNavigate});
 
   @override
   Widget build(BuildContext context) {
