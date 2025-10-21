@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rumaia_project/models/investor/investor_opportunities_model.dart';
-import 'package:rumaia_project/screens/investor/investor_create_invest_screen.dart';
+import 'package:rumaia_project/screens/investor/investor_blockchain_invest_screen.dart';
 import 'package:rumaia_project/utils/investor/investor_color.dart';
 
 class InvestorDetailScreen extends StatelessWidget {
@@ -148,6 +148,7 @@ class InvestorDetailScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             //  Invest Now Button
+            // Di dalam InvestorDetailScreen, update bagian Invest Now Button:
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -159,16 +160,23 @@ class InvestorDetailScreen extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  //  Navigate to create investment form
+                  // Navigate to blockchain investment screen
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const InvestorCreateInvestScreen(),
+                      builder: (context) => InvestorBlockchainInvestScreen(
+                        investment: {
+                          'title': investment.title,
+                          'location': investment.location,
+                          'minInvestment': investment.minInvestment,
+                          'roi': investment.roi,
+                        },
+                      ),
                     ),
                   );
                 },
                 child: const Text(
-                  "Invest Now",
+                  "Invest Now with Blockchain",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
