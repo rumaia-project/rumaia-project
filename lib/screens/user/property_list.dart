@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+
 import 'detail_property_screen.dart';
 
 class PropertyListScreen extends StatelessWidget {
+  const PropertyListScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,6 +65,7 @@ class PropertyCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const PropertyCard({
+    super.key,
     required this.price,
     required this.title,
     required this.location,

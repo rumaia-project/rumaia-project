@@ -120,8 +120,9 @@ class _InvestorCreateInvestScreenState
                         ),
                         onPressed: () {
                           setState(() {
-                            if (investmentAmount > 1000)
+                            if (investmentAmount > 1000) {
                               investmentAmount -= 500;
+                            }
                           });
                         },
                       ),

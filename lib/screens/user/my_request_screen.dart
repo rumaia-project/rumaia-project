@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MyRequestsScreen extends StatefulWidget {
+  const MyRequestsScreen({super.key});
+
   @override
   _MyRequestsScreenState createState() => _MyRequestsScreenState();
 }

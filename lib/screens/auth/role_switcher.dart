@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:rumaia_project/main.dart';
 import 'package:rumaia_project/screens/admin/admin_dashboard.dart';
 import 'package:rumaia_project/screens/property/dashboard_property.dart';
@@ -12,47 +13,90 @@ class RoleSwitcherScreen extends StatefulWidget {
   State<RoleSwitcherScreen> createState() => _RoleSwitcherScreenState();
 }
 
-class _RoleSwitcherScreenState extends State<RoleSwitcherScreen> {
+class _RoleSwitcherScreenState extends State<RoleSwitcherScreen>
+    with SingleTickerProviderStateMixin {
   String? selectedRole;
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
 
   final Map<String, Map<String, dynamic>> roles = {
     'Admin': {
       'icon': Icons.admin_panel_settings_rounded,
       'widget': const AdminDashboardScreen(),
-      'color': Colors.redAccent,
+      'color': const Color(0xFFFF6B6B),
+      'gradient': const [Color(0xFFFF6B6B), Color(0xFFFF8E8E)],
+      'description': 'Kelola sistem & pengguna',
     },
     'Customer': {
       'icon': Icons.person_outline_rounded,
       'widget': const MainNavigation(),
-      'color': Colors.teal,
+      'color': const Color(0xFF4ECDC4),
+      'gradient': const [Color(0xFF4ECDC4), Color(0xFF44A8A0)],
+      'description': 'Jelajahi properti impian',
     },
     'Developer': {
       'icon': Icons.developer_board,
       'widget': const BotnavbarScreen(),
-      'color': Colors.purple,
+      'color': const Color(0xFF9B59B6),
+      'gradient': const [Color(0xFF9B59B6), Color(0xFF8E44AD)],
+      'description': 'Bangun & kembangkan proyek',
     },
     'Property': {
       'icon': Icons.apartment_rounded,
       'widget': const DashboardProperty(),
-      'color': Colors.indigo,
+      'color': const Color(0xFF5C6BC0),
+      'gradient': const [Color(0xFF5C6BC0), Color(0xFF3F51B5)],
+      'description': 'Atur properti Anda',
     },
     'Investor': {
       'icon': Icons.trending_up_rounded,
       'widget': const InvestorBotNavBarScreen(),
-      'color': Colors.orange,
+      'color': const Color(0xFFFF9800),
+      'gradient': const [Color(0xFFFF9800), Color(0xFFF57C00)],
+      'description': 'Monitor investasi properti',
     },
   };
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   void _navigateToRole(BuildContext context, Widget destination) {
     Navigator.of(context).push(
       PageRouteBuilder(
-        transitionDuration: const Duration(milliseconds: 300),
+        transitionDuration: const Duration(milliseconds: 400),
         pageBuilder: (_, __, ___) => destination,
         transitionsBuilder: (_, animation, __, child) {
           return FadeTransition(
-            opacity: CurvedAnimation(parent: animation, curve: Curves.easeOut),
+            opacity: CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeInOut,
+            ),
             child: ScaleTransition(
-              scale: Tween<double>(begin: 0.98, end: 1.0).animate(animation),
+              scale: Tween<double>(begin: 0.95, end: 1.0).animate(
+                CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+              ),
               child: child,
             ),
           );
@@ -63,120 +107,197 @@ class _RoleSwitcherScreenState extends State<RoleSwitcherScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     final color = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: color.surface,
-      appBar: AppBar(
-        title: const Text(
-          'Guest Role',
-          style: TextStyle(fontWeight: FontWeight.w600),
-        ),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: color.surface,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-        child: Column(
-          children: [
-            Icon(Icons.manage_accounts_rounded, size: 80, color: color.primary),
-            const SizedBox(height: 16),
-            Text(
-              'Login as',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
-                color: color.onSurface,
+      body: SafeArea(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            // Header Section dengan Gradient
+            SliverToBoxAdapter(
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: SlideTransition(
+                  position: _slideAnimation,
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(
+                      24,
+                      size.height * 0.04,
+                      24,
+                      32,
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: isDark
+                            ? [color.surface, color.surfaceContainerHighest]
+                            : [Colors.white, color.surfaceContainerLowest],
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        // Logo atau Icon dengan efek glow
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                color.primary.withOpacity(0.2),
+                                color.primary.withOpacity(0.05),
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: color.primary.withOpacity(0.2),
+                                blurRadius: 30,
+                                spreadRadius: 5,
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.home_work_rounded,
+                            size: 56,
+                            color: color.primary,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        // Welcome Text
+                        Text(
+                          'Selamat Datang',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: color.onSurface.withOpacity(0.7),
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Pilih Peran Anda',
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w800,
+                            color: color.onSurface,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            color: color.primaryContainer.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: color.primary.withOpacity(0.1),
+                              width: 1,
+                            ),
+                          ),
+                          child: Text(
+                            'Akses cepat ke semua fitur',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              color: color.primary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
-            const SizedBox(height: 32),
 
-            Expanded(
-              child: ListView.separated(
-                itemCount: roles.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 16),
-                itemBuilder: (context, index) {
+            // Role Cards
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
                   final name = roles.keys.elementAt(index);
                   final data = roles[name]!;
                   final isSelected = selectedRole == name;
 
-                  return Material(
-                    color: color.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(18),
-                    elevation: isSelected ? 3 : 1,
-                    clipBehavior: Clip.antiAlias,
-                    child: InkWell(
-                      onTap: () {
-                        setState(() => selectedRole = name);
-                        Future.delayed(const Duration(milliseconds: 150), () {
-                          _navigateToRole(context, data['widget']);
-                        });
-                      },
-                      splashColor: data['color'].withOpacity(0.1),
-                      highlightColor: Colors.transparent,
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 250),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 22,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: isSelected
-                                ? data['color']
-                                : color.outlineVariant.withOpacity(0.3),
-                            width: isSelected ? 2 : 1,
+                  return FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: SlideTransition(
+                      position:
+                          Tween<Offset>(
+                            begin: Offset(0, 0.1 * (index + 1)),
+                            end: Offset.zero,
+                          ).animate(
+                            CurvedAnimation(
+                              parent: _controller,
+                              curve: Interval(
+                                index * 0.1,
+                                0.6 + (index * 0.1),
+                                curve: Curves.easeOutCubic,
+                              ),
+                            ),
                           ),
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                        child: Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 26,
-                              backgroundColor: data['color'].withOpacity(0.15),
-                              child: Icon(
-                                data['icon'],
-                                color: data['color'],
-                                size: 26,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: Text(
-                                name,
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w600,
-                                  color: color.onSurface,
-                                ),
-                              ),
-                            ),
-                            AnimatedOpacity(
-                              opacity: isSelected ? 1 : 0,
-                              duration: const Duration(milliseconds: 250),
-                              child: Icon(
-                                Icons.arrow_forward_ios_rounded,
-                                color: data['color'],
-                                size: 18,
-                              ),
-                            ),
-                          ],
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: _buildRoleCard(
+                          context,
+                          name,
+                          data,
+                          isSelected,
+                          color,
+                          isDark,
                         ),
                       ),
                     ),
                   );
-                },
+                }, childCount: roles.length),
               ),
             ),
 
-            const SizedBox(height: 20),
-            Text(
-              '© Rumaia Project',
-              style: TextStyle(
-                color: color.outline,
-                fontSize: 13,
-                fontWeight: FontWeight.w400,
+            // Footer
+            SliverToBoxAdapter(
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 24),
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 60),
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: color.outlineVariant.withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        '© Rumaia Project',
+                        style: TextStyle(
+                          color: color.outline.withOpacity(0.6),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Property Management System',
+                        style: TextStyle(
+                          color: color.outline.withOpacity(0.4),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ],
@@ -184,4 +305,156 @@ class _RoleSwitcherScreenState extends State<RoleSwitcherScreen> {
       ),
     );
   }
+
+  Widget _buildRoleCard(
+    BuildContext context,
+    String name,
+    Map<String, dynamic> data,
+    bool isSelected,
+    ColorScheme color,
+    bool isDark,
+  ) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: isSelected
+                ? data['color'].withOpacity(0.25)
+                : Colors.black.withOpacity(isDark ? 0.2 : 0.06),
+            blurRadius: isSelected ? 20 : 10,
+            offset: const Offset(0, 4),
+            spreadRadius: isSelected ? 2 : 0,
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            setState(() => selectedRole = name);
+            HapticFeedback.lightImpact();
+            Future.delayed(const Duration(milliseconds: 200), () {
+              _navigateToRole(context, data['widget']);
+            });
+          },
+          borderRadius: BorderRadius.circular(20),
+          splashColor: data['color'].withOpacity(0.1),
+          highlightColor: data['color'].withOpacity(0.05),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOutCubic,
+            decoration: BoxDecoration(
+              gradient: isSelected
+                  ? LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: data['gradient'],
+                    )
+                  : LinearGradient(
+                      colors: [
+                        color.surfaceContainerHighest,
+                        color.surfaceContainerHigh,
+                      ],
+                    ),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: isSelected
+                    ? Colors.white.withOpacity(0.3)
+                    : color.outlineVariant.withOpacity(0.2),
+                width: isSelected ? 2 : 1,
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  // Icon Container
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? Colors.white.withOpacity(0.25)
+                          : data['color'].withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: isSelected
+                          ? [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ]
+                          : [],
+                    ),
+                    child: Icon(
+                      data['icon'],
+                      color: isSelected ? Colors.white : data['color'],
+                      size: 28,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  // Text Content
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          name,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: isSelected ? Colors.white : color.onSurface,
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          data['description'],
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: isSelected
+                                ? Colors.white.withOpacity(0.85)
+                                : color.onSurface.withOpacity(0.6),
+                            letterSpacing: 0.1,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Arrow Icon
+                  AnimatedRotation(
+                    duration: const Duration(milliseconds: 300),
+                    turns: isSelected ? 0 : -0.125,
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 300),
+                      opacity: isSelected ? 1 : 0.3,
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? Colors.white.withOpacity(0.2)
+                              : data['color'].withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.arrow_forward_rounded,
+                          color: isSelected ? Colors.white : data['color'],
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
+
+// Import tambahan yang perlu ditambahkan di atas file
