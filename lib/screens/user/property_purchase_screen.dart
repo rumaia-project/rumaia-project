@@ -13,29 +13,70 @@ class PropertyPurchaseScreen extends StatefulWidget {
 class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
   int _selectedPaymentMethod = 0; // 0: IDRT, 1: USDT, 2: BNB
   bool _isProcessing = false;
-  final double _tokenBalance = 12500000; // Saldo token contoh
 
+  // Data harga properti berdasarkan nama
+  double get _propertyPrice {
+    final name = widget.property["name"].toLowerCase();
+    if (name.contains("cluster bukit asri")) {
+      return 400000000.0; // 400 juta
+    } else if (name.contains("cluster harmoni")) {
+      return 600000000.0; // 600 juta
+    } else if (name.contains("cluster alam hijau")) {
+      return 750000000.0; // 750 juta
+    } else if (name.contains("modern minimalis")) {
+      return 2500000000.0; // 2.5 miliar
+    } else if (name.contains("cluster exclusive")) {
+      return 1800000000.0; // 1.8 miliar
+    } else if (name.contains("villa modern")) {
+      return 3200000000.0; // 3.2 miliar
+    } else {
+      return 950000000.0; // 950 juta untuk apartemen
+    }
+  }
+
+  // Format harga ke Rupiah
+  String get _formattedPrice {
+    if (_propertyPrice >= 1000000000) {
+      return 'Rp ${(_propertyPrice / 1000000000).toStringAsFixed(1)} M';
+    } else {
+      return 'Rp ${(_propertyPrice / 1000000).toStringAsFixed(0)} JT';
+    }
+  }
+
+  String _formatNumber(double number) {
+    if (number >= 1000000) {
+      return '${(number / 1000000).toStringAsFixed(2)}M';
+    } else if (number >= 1000) {
+      return '${(number / 1000).toStringAsFixed(2)}K';
+    } else if (number < 1) {
+      return number.toStringAsFixed(4); // untuk pecahan kecil seperti BNB
+    } else {
+      return number.toStringAsFixed(2);
+    }
+  }
+
+  // GANTI bagian payment methods menjadi:
   final List<Map<String, dynamic>> _paymentMethods = [
     {
       'name': 'IDRT Token',
       'symbol': 'IDRT',
       'icon': 'IDRT',
-      'exchangeRate': 1.0,
-      'balance': 12500000,
+      'exchangeRate': 1.0, // 1 IDRT = 1 IDR
+      'balance': 5000000000.0, // 5M IDRT (CUKUP untuk 400M IDRT)
     },
     {
       'name': 'USDT',
       'symbol': 'USDT',
       'icon': 'USDT',
-      'exchangeRate': 15750.0,
-      'balance': 800,
+      'exchangeRate': 15700.0, // 1 USDT = 15,700 IDR (realistik)
+      'balance': 50000.0, // 50K USDT (CUKUP untuk 25.5K USDT)
     },
     {
       'name': 'BNB',
       'symbol': 'BNB',
       'icon': 'BNB',
-      'exchangeRate': 5250000.0,
-      'balance': 2.5,
+      'exchangeRate': 8500000.0, // 1 BNB = 8.5M IDR (realistik)
+      'balance': 30.0, // HANYA 30 BNB (TIDAK CUKUP untuk 47 BNB)
     },
   ];
 
@@ -63,7 +104,7 @@ class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          child: Padding(
+          child: Container(
             padding: EdgeInsets.all(24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -80,11 +121,17 @@ class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
                 ),
                 SizedBox(height: 12),
                 Text(
-                  'Transaksi pembelian properti telah berhasil dilakukan di blockchain. Detail transaksi telah dikirim ke email Anda.',
+                  'Transaksi pembelian properti telah berhasil dilakukan di blockchain.',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                 ),
                 SizedBox(height: 20),
+
+                // Card Properti yang Berhasil Dibeli
+                _buildPropertySuccessCard(),
+                SizedBox(height: 20),
+
+                // Detail Transaksi
                 Container(
                   padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
@@ -93,10 +140,24 @@ class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
                   ),
                   child: Column(
                     children: [
-                      _buildTransactionDetail('ID Transaksi', '#TXB827361948'),
-                      _buildTransactionDetail('Token Used', 'IDRT'),
-                      _buildTransactionDetail('Amount', '2,500,000,000 IDRT'),
+                      _buildTransactionDetail(
+                        'ID Transaksi',
+                        '#TX${DateTime.now().millisecondsSinceEpoch.toString().substring(8)}',
+                      ),
+                      _buildTransactionDetail(
+                        'Token Used',
+                        _paymentMethods[_selectedPaymentMethod]['symbol'],
+                      ),
+                      _buildTransactionDetail(
+                        'Amount Paid',
+                        '${_formatNumber(_requiredAmount)} ${_paymentMethods[_selectedPaymentMethod]['symbol']}',
+                      ),
+                      _buildTransactionDetail(
+                        'Property Value',
+                        _formattedPrice,
+                      ),
                       _buildTransactionDetail('Blockchain', 'BNB Smart Chain'),
+                      _buildTransactionDetail('Status', 'Confirmed'),
                     ],
                   ),
                 ),
@@ -130,6 +191,77 @@ class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
     );
   }
 
+  Widget _buildPropertySuccessCard() {
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.green.withOpacity(0.3)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.green.withOpacity(0.1),
+            blurRadius: 8,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              image: DecorationImage(
+                image: NetworkImage(widget.property['image']),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Properti Anda',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.green,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  widget.property['name'],
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: Colors.grey[800],
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 2),
+                Text(
+                  widget.property['location'],
+                  style: TextStyle(color: Colors.grey[600], fontSize: 11),
+                ),
+                SizedBox(height: 2),
+                Text(
+                  widget.property['specs'] ?? '4 KT • 3 KM • 120 m²',
+                  style: TextStyle(color: Colors.grey[600], fontSize: 11),
+                ),
+              ],
+            ),
+          ),
+          Icon(Icons.verified, color: Colors.green, size: 20),
+        ],
+      ),
+    );
+  }
+
   Widget _buildTransactionDetail(String label, String value) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 4),
@@ -146,17 +278,13 @@ class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
     );
   }
 
-  double get _propertyPrice {
-    return 2500000000; // 2.5 Miliar
-  }
-
   double get _requiredAmount {
     return _propertyPrice /
-        _paymentMethods[_selectedPaymentMethod]['exchangeRate'];
+        (_paymentMethods[_selectedPaymentMethod]['exchangeRate'] as double);
   }
 
   bool get _hasSufficientBalance {
-    return _paymentMethods[_selectedPaymentMethod]['balance'] >=
+    return (_paymentMethods[_selectedPaymentMethod]['balance'] as double) >=
         _requiredAmount;
   }
 
@@ -212,7 +340,7 @@ class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue[700]!),
+            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF1565C0)),
           ),
           SizedBox(height: 20),
           Text(
@@ -234,17 +362,17 @@ class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
             padding: EdgeInsets.all(16),
             margin: EdgeInsets.symmetric(horizontal: 32),
             decoration: BoxDecoration(
-              color: Colors.blue[50],
+              color: Color(0xFF1565C0).withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
               children: [
-                Icon(Icons.info_outline, color: Colors.blue[700], size: 20),
+                Icon(Icons.info_outline, color: Color(0xFF1565C0), size: 20),
                 SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     'Transaksi blockchain membutuhkan waktu beberapa detik untuk dikonfirmasi',
-                    style: TextStyle(color: Colors.blue[700], fontSize: 12),
+                    style: TextStyle(color: Color(0xFF1565C0), fontSize: 12),
                   ),
                 ),
               ],
@@ -277,7 +405,7 @@ class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               image: DecorationImage(
-                image: AssetImage('assets/images/rumah_modern_min_2l.jpg'),
+                image: NetworkImage(widget.property['image']),
                 fit: BoxFit.cover,
               ),
             ),
@@ -288,7 +416,7 @@ class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.property['title'] ?? 'Rumah Modern Minimalis 2 Lantai',
+                  widget.property['name'],
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
@@ -299,7 +427,7 @@ class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  widget.property['location'] ?? 'Jakarta Selatan, DKI Jakarta',
+                  widget.property['location'],
                   style: TextStyle(color: Colors.grey[600], fontSize: 12),
                 ),
                 SizedBox(height: 4),
@@ -309,11 +437,11 @@ class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
                 ),
                 SizedBox(height: 8),
                 Text(
-                  'Rp 2.5 M',
+                  _formattedPrice,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.blue[700],
+                    color: Color(0xFF1565C0),
                   ),
                 ),
               ],
@@ -341,7 +469,9 @@ class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
           int index = entry.key;
           var method = entry.value;
           bool isSelected = _selectedPaymentMethod == index;
-          double requiredAmount = _propertyPrice / method['exchangeRate'];
+          double requiredAmount = _requiredAmount;
+          double methodBalance = method['balance'] as double;
+          bool hasSufficientBalance = methodBalance >= requiredAmount;
 
           return Container(
             margin: EdgeInsets.only(bottom: 12),
@@ -358,10 +488,12 @@ class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
                 child: Container(
                   padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: isSelected ? Colors.blue[50] : Colors.white,
+                    color: isSelected
+                        ? Color(0xFF1565C0).withOpacity(0.1)
+                        : Colors.white,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: isSelected ? Colors.blue[700]! : Colors.grey[300]!,
+                      color: isSelected ? Color(0xFF1565C0) : Colors.grey[300]!,
                       width: isSelected ? 2 : 1,
                     ),
                   ),
@@ -372,13 +504,13 @@ class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
                         height: 40,
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? Colors.blue[700]
+                              ? Color(0xFF1565C0)
                               : Colors.grey[200],
                           shape: BoxShape.circle,
                         ),
                         child: Center(
                           child: Text(
-                            method['icon'],
+                            method['icon'] as String,
                             style: TextStyle(
                               color: isSelected
                                   ? Colors.white
@@ -395,7 +527,7 @@ class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              method['name'],
+                              method['name'] as String,
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 color: Colors.grey[800],
@@ -403,7 +535,7 @@ class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
                             ),
                             SizedBox(height: 2),
                             Text(
-                              'Saldo: ${method['balance']} ${method['symbol']}',
+                              'Saldo: ${_formatNumber(methodBalance)} ${method['symbol']}',
                               style: TextStyle(
                                 color: Colors.grey[600],
                                 fontSize: 12,
@@ -411,9 +543,9 @@ class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
                             ),
                             SizedBox(height: 4),
                             Text(
-                              'Dibutuhkan: ${requiredAmount.toStringAsFixed(2)} ${method['symbol']}',
+                              'Dibutuhkan: ${_formatNumber(requiredAmount)} ${method['symbol']}',
                               style: TextStyle(
-                                color: _hasSufficientBalance
+                                color: hasSufficientBalance
                                     ? Colors.green
                                     : Colors.red,
                                 fontSize: 12,
@@ -431,7 +563,7 @@ class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
                             _selectedPaymentMethod = value!;
                           });
                         },
-                        activeColor: Colors.blue[700],
+                        activeColor: Color(0xFF1565C0),
                       ),
                     ],
                   ),
@@ -447,6 +579,8 @@ class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
   Widget _buildPaymentDetails() {
     var selectedMethod = _paymentMethods[_selectedPaymentMethod];
     double requiredAmount = _requiredAmount;
+    double methodBalance = selectedMethod['balance'] as double;
+    double exchangeRate = selectedMethod['exchangeRate'] as double;
 
     return Container(
       padding: EdgeInsets.all(16),
@@ -465,20 +599,23 @@ class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
             ),
           ),
           SizedBox(height: 12),
-          _buildPaymentDetailRow('Harga Properti', 'Rp 2,500,000,000'),
-          _buildPaymentDetailRow('Mata Uang', selectedMethod['symbol']),
+          _buildPaymentDetailRow('Harga Properti', _formattedPrice),
+          _buildPaymentDetailRow(
+            'Mata Uang',
+            selectedMethod['symbol'] as String,
+          ),
           _buildPaymentDetailRow(
             'Jumlah yang Dibayar',
-            '${requiredAmount.toStringAsFixed(2)} ${selectedMethod['symbol']}',
+            '${_formatNumber(requiredAmount)} ${selectedMethod['symbol']}',
           ),
           _buildPaymentDetailRow(
             'Kurs',
-            '1 ${selectedMethod['symbol']} = Rp ${selectedMethod['exchangeRate'].toStringAsFixed(0)}',
+            '1 ${selectedMethod['symbol']} = Rp ${_formatNumber(exchangeRate)}',
           ),
           Divider(height: 24),
           _buildPaymentDetailRow(
             'Saldo Tersedia',
-            '${selectedMethod['balance']} ${selectedMethod['symbol']}',
+            '${_formatNumber(methodBalance)} ${selectedMethod['symbol']}',
             valueColor: _hasSufficientBalance ? Colors.green : Colors.red,
           ),
           _buildPaymentDetailRow(
@@ -531,7 +668,8 @@ class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
           '• Dengan melanjutkan, Anda menyetujui bahwa transaksi ini bersifat final dan tidak dapat dibatalkan\n'
           '• Transaksi blockchain bersifat irreversible setelah dikonfirmasi\n'
           '• Properti akan ditransfer ke wallet Anda setelah 3 konfirmasi blockchain\n'
-          '• Biaya gas network akan ditanggung oleh pembeli',
+          '• Biaya gas network akan ditambahkan otomatis\n'
+          '• Sertifikat kepemilikan akan dikirim dalam 7 hari kerja',
           style: TextStyle(color: Colors.grey[600], fontSize: 12, height: 1.5),
         ),
       ],
@@ -567,7 +705,7 @@ class _PropertyPurchaseScreenState extends State<PropertyPurchaseScreen> {
           onPressed: _hasSufficientBalance ? _processPayment : null,
           style: ElevatedButton.styleFrom(
             backgroundColor: _hasSufficientBalance
-                ? Colors.blue[700]
+                ? Color(0xFF1565C0)
                 : Colors.grey[400],
             padding: EdgeInsets.symmetric(vertical: 16),
             shape: RoundedRectangleBorder(
