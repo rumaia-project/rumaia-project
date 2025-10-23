@@ -1,12 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:rumaia_project/main.dart';
-import 'package:rumaia_project/screens/admin/admin_dashboard.dart';
-import 'package:rumaia_project/screens/auth/role_switcher.dart';
-import 'package:rumaia_project/screens/property/dashboard_property.dart';
+import 'package:rumaia_project/screens/auth/role_switcher.dart'; // Import RoleSwitcherScreen
 import 'package:rumaia_project/screens/widget/onboarding.dart';
-import 'package:rumaia_project/widgets/developer/botnavbar.dart';
-import 'package:rumaia_project/widgets/investor/bot_nav_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -47,11 +42,8 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (!mounted) return;
 
-    if (hasSeenOnboarding && savedRole != null) {
-      // Langsung ke dashboard sesuai role
-      _navigateToDashboard(savedRole);
-    } else if (hasSeenOnboarding) {
-      // Sudah pernah onboarding tapi belum login
+    if (hasSeenOnboarding) {
+      // Sudah pernah onboarding, langsung ke RoleSwitcherScreen
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const RoleSwitcherScreen()),
@@ -63,35 +55,6 @@ class _SplashScreenState extends State<SplashScreen>
         MaterialPageRoute(builder: (_) => const OnboardingScreen()),
       );
     }
-  }
-
-  void _navigateToDashboard(String role) {
-    // Import dashboard sesuai role
-    Widget destination;
-    switch (role) {
-      case 'Admin':
-        destination = const AdminDashboardScreen(); // Import dari file asli
-        break;
-      case 'Customer':
-        destination = const MainNavigation(); // Import dari file asli
-        break;
-      case 'Developer':
-        destination = const BotnavbarScreen(); // Import dari file asli
-        break;
-      case 'Property':
-        destination = const DashboardProperty(); // Import dari file asli
-        break;
-      case 'Investor':
-        destination = const InvestorBotNavBarScreen(); // Import dari file asli
-        break;
-      default:
-        destination = const RoleSwitcherScreen();
-    }
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => destination),
-    );
   }
 
   @override

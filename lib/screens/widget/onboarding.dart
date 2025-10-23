@@ -1,6 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:rumaia_project/screens/auth/role_switcher.dart';
+import 'package:rumaia_project/screens/auth/role_switcher.dart'; // Import RoleSwitcherScreen
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -54,7 +54,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       context,
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 400),
-        pageBuilder: (_, __, ___) => const RoleSwitcherScreen(),
+        pageBuilder: (_, __, ___) =>
+            const RoleSwitcherScreen(), // Ke RoleSwitcherScreen
         transitionsBuilder: (_, animation, __, child) {
           return FadeTransition(opacity: animation, child: child);
         },

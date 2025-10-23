@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:rumaia_project/main.dart';
-import 'package:rumaia_project/screens/admin/admin_dashboard.dart';
-import 'package:rumaia_project/screens/property/dashboard_property.dart';
-import 'package:rumaia_project/widgets/developer/botnavbar.dart';
-import 'package:rumaia_project/widgets/investor/bot_nav_bar.dart';
+import 'package:rumaia_project/screens/auth/login.dart'; // Import LoginScreen
 
 class RoleSwitcherScreen extends StatefulWidget {
   const RoleSwitcherScreen({super.key});
@@ -23,35 +19,30 @@ class _RoleSwitcherScreenState extends State<RoleSwitcherScreen>
   final Map<String, Map<String, dynamic>> roles = {
     'Admin': {
       'icon': Icons.admin_panel_settings_rounded,
-      'widget': const AdminDashboardScreen(),
       'color': const Color(0xFFFF6B6B),
       'gradient': const [Color(0xFFFF6B6B), Color(0xFFFF8E8E)],
       'description': 'Kelola sistem & pengguna',
     },
     'Customer': {
       'icon': Icons.person_outline_rounded,
-      'widget': const MainNavigation(),
       'color': const Color(0xFF4ECDC4),
       'gradient': const [Color(0xFF4ECDC4), Color(0xFF44A8A0)],
       'description': 'Jelajahi properti impian',
     },
     'Developer': {
       'icon': Icons.developer_board,
-      'widget': const BotnavbarScreen(),
       'color': const Color(0xFF9B59B6),
       'gradient': const [Color(0xFF9B59B6), Color(0xFF8E44AD)],
       'description': 'Bangun & kembangkan proyek',
     },
     'Property': {
       'icon': Icons.apartment_rounded,
-      'widget': const DashboardProperty(),
       'color': const Color(0xFF5C6BC0),
       'gradient': const [Color(0xFF5C6BC0), Color(0xFF3F51B5)],
       'description': 'Atur properti Anda',
     },
     'Investor': {
       'icon': Icons.trending_up_rounded,
-      'widget': const InvestorBotNavBarScreen(),
       'color': const Color(0xFFFF9800),
       'gradient': const [Color(0xFFFF9800), Color(0xFFF57C00)],
       'description': 'Monitor investasi properti',
@@ -82,11 +73,12 @@ class _RoleSwitcherScreenState extends State<RoleSwitcherScreen>
     super.dispose();
   }
 
-  void _navigateToRole(BuildContext context, Widget destination) {
+  void _navigateToLogin(BuildContext context, String role) {
+    // Simpan role ke SharedPreferences dan navigasi ke LoginScreen
     Navigator.of(context).push(
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 400),
-        pageBuilder: (_, __, ___) => destination,
+        pageBuilder: (_, __, ___) => LoginScreen(selectedRole: role),
         transitionsBuilder: (_, animation, __, child) {
           return FadeTransition(
             opacity: CurvedAnimation(
@@ -335,7 +327,10 @@ class _RoleSwitcherScreenState extends State<RoleSwitcherScreen>
             setState(() => selectedRole = name);
             HapticFeedback.lightImpact();
             Future.delayed(const Duration(milliseconds: 200), () {
-              _navigateToRole(context, data['widget']);
+              _navigateToLogin(
+                context,
+                name,
+              ); // Navigasi ke LoginScreen dengan role
             });
           },
           borderRadius: BorderRadius.circular(20),
@@ -456,5 +451,3 @@ class _RoleSwitcherScreenState extends State<RoleSwitcherScreen>
     );
   }
 }
-
-// Import tambahan yang perlu ditambahkan di atas file
