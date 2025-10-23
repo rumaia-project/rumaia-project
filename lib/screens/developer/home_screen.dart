@@ -294,7 +294,7 @@ class _HomeScreenState extends State<HomeScreen>
       children: [
         Expanded(
           child: _buildStatCard(
-            title: 'Proyek Aktif',
+            title: 'Active Projects',
             value: '12',
             icon: Icons.folder_open_rounded,
             color: const Color(0xFF10B981),
@@ -305,12 +305,23 @@ class _HomeScreenState extends State<HomeScreen>
         const SizedBox(width: 12),
         Expanded(
           child: _buildStatCard(
-            title: 'Total Investasi',
+            title: 'Total Investment',
             value: '\$1.2M',
             icon: Icons.trending_up_rounded,
             color: const Color(0xFFF59E0B),
             isDark: isDark,
             trend: '+15%',
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _buildStatCard(
+            title: 'ROI',
+            value: '18.5%',
+            icon: Icons.percent_rounded,
+            color: const Color(0xFF6366F1),
+            isDark: isDark,
+            trend: '+2.3%',
           ),
         ),
       ],
@@ -540,7 +551,7 @@ class _HomeScreenState extends State<HomeScreen>
       children: [
         Expanded(
           child: _buildInsightCard(
-            title: 'Total Nilai',
+            title: 'Portfolio Value',
             value: 'Rp2.5B',
             icon: Icons.account_balance_wallet_rounded,
             color: const Color(0xFF6366F1),
@@ -550,10 +561,20 @@ class _HomeScreenState extends State<HomeScreen>
         const SizedBox(width: 12),
         Expanded(
           child: _buildInsightCard(
-            title: 'Dana Terkumpul',
+            title: 'Funds Invested',
             value: 'Rp1.8B',
             icon: Icons.payments_rounded,
             color: const Color(0xFF10B981),
+            isDark: isDark,
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _buildInsightCard(
+            title: 'Blockchain Assets',
+            value: 'Rp850M',
+            icon: Icons.account_balance_rounded,
+            color: const Color(0xFFF59E0B),
             isDark: isDark,
           ),
         ),

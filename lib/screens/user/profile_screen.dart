@@ -1,4 +1,8 @@
+// [file name]: profile_screen.dart
+// [file content begin]
 import 'package:flutter/material.dart';
+import 'package:rumaia_project/screens/property/profile/help_center_screen.dart';
+import 'package:rumaia_project/screens/user/wallet_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -97,6 +101,11 @@ class ProfileScreen extends StatelessWidget {
 
             SizedBox(height: 24),
 
+            // Wallet Section - NEW: Added Wallet Card
+            _buildWalletCard(context),
+
+            SizedBox(height: 16),
+
             // Account Section
             Container(
               width: double.infinity,
@@ -127,9 +136,23 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                   _buildMenuItem(
+                    icon: Icons.account_balance_wallet_outlined,
+                    title: 'Dompet Blockchain',
+                    subtitle: 'Kelola aset crypto Anda',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => WalletScreen()),
+                      );
+                    },
+                    hasSwitch: false,
+                    isSwitched: false,
+                  ),
+                  _buildMenuItem(
                     icon: Icons.edit_outlined,
                     title: 'Edit Profil',
                     subtitle: 'Ubah informasi pribadi',
+                    onTap: () {},
                     hasSwitch: false,
                     isSwitched: false,
                   ),
@@ -137,6 +160,7 @@ class ProfileScreen extends StatelessWidget {
                     icon: Icons.people_outline,
                     title: 'Manajemen Keluarga',
                     subtitle: 'Kelola anggota keluarga',
+                    onTap: () {},
                     hasSwitch: false,
                     isSwitched: false,
                   ),
@@ -144,6 +168,7 @@ class ProfileScreen extends StatelessWidget {
                     icon: Icons.notifications_outlined,
                     title: 'Notifikasi',
                     subtitle: 'Pengaturan pemberitahuan',
+                    onTap: () {},
                     hasSwitch: false,
                     isSwitched: false,
                   ),
@@ -151,6 +176,7 @@ class ProfileScreen extends StatelessWidget {
                     icon: Icons.security_outlined,
                     title: 'Privasi & Keamanan',
                     subtitle: 'Kelola data dan keamanan',
+                    onTap: () {},
                     hasSwitch: false,
                     isSwitched: false,
                   ),
@@ -193,6 +219,7 @@ class ProfileScreen extends StatelessWidget {
                     icon: Icons.settings_outlined,
                     title: 'Pengaturan',
                     subtitle: '',
+                    onTap: () {},
                     hasSwitch: false,
                     isSwitched: false,
                   ),
@@ -200,6 +227,14 @@ class ProfileScreen extends StatelessWidget {
                     icon: Icons.help_outline,
                     title: 'Pusat Bantuan',
                     subtitle: '',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HelpCenterScreen(),
+                        ),
+                      );
+                    },
                     hasSwitch: false,
                     isSwitched: false,
                   ),
@@ -233,6 +268,159 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
+  // NEW: Wallet Card Widget
+  Widget _buildWalletCard(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => WalletScreen()),
+        );
+      },
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF1565C0), Color(0xFF42A5F5)],
+          ),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.blue.withOpacity(0.3),
+              blurRadius: 10,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Dompet Anda',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    'IDRT',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            Text(
+              'Total Saldo',
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.8),
+                fontSize: 14,
+              ),
+            ),
+            SizedBox(height: 4),
+            Text(
+              'Rp 5.000.000.000',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              '5.000.000 IDRT',
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.8),
+                fontSize: 14,
+              ),
+            ),
+            SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Deposit',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Withdraw',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Transfer',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildStatItem(String value, String label) {
     return Column(
       children: [
@@ -254,55 +442,60 @@ class ProfileScreen extends StatelessWidget {
     required IconData icon,
     required String title,
     required String subtitle,
+    required VoidCallback onTap,
     required bool hasSwitch,
     required bool isSwitched,
   }) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 12),
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey[100]!)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: Colors.grey[50],
-              shape: BoxShape.circle,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: Colors.grey[100]!)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: Colors.grey[50],
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: Colors.grey[600], size: 20),
             ),
-            child: Icon(icon, color: Colors.grey[600], size: 20),
-          ),
-          SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: Colors.grey[800],
-                  ),
-                ),
-                if (subtitle.isNotEmpty)
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    subtitle,
-                    style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+                    title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey[800],
+                    ),
                   ),
-              ],
+                  if (subtitle.isNotEmpty)
+                    Text(
+                      subtitle,
+                      style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+                    ),
+                ],
+              ),
             ),
-          ),
-          if (hasSwitch)
-            Switch(
-              value: isSwitched,
-              onChanged: (value) {},
-              activeColor: Color(0xFF1565C0),
-            )
-          else
-            Icon(Icons.arrow_forward_ios, color: Colors.grey[400], size: 16),
-        ],
+            if (hasSwitch)
+              Switch(
+                value: isSwitched,
+                onChanged: (value) {},
+                activeThumbColor: Color(0xFF1565C0),
+              )
+            else
+              Icon(Icons.arrow_forward_ios, color: Colors.grey[400], size: 16),
+          ],
+        ),
       ),
     );
   }
 }
+// [file content end]

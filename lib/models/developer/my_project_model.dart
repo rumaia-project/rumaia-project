@@ -1,7 +1,3 @@
-/// ===============================================================
-/// PROJECT MODEL
-///
-/// ===============================================================
 class ProjectModel {
   final String title;
   final String location;
@@ -12,6 +8,8 @@ class ProjectModel {
   final double targetFund;
   final String estimation;
   final String imagePlaceholder;
+  final double? investmentAmount;
+  final String? roi;
 
   ProjectModel({
     required this.title,
@@ -23,5 +21,7 @@ class ProjectModel {
     required this.targetFund,
     required this.estimation,
     required this.imagePlaceholder,
+    this.investmentAmount,
+    this.roi,
   });
 }
