@@ -1,16 +1,22 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:rumaia_project/screens/admin/admin_dashboard.dart';
 import 'package:rumaia_project/screens/auth/role_switcher.dart';
+import 'package:rumaia_project/screens/property/dashboard_property.dart';
 import 'package:rumaia_project/screens/user/home_screen.dart';
 import 'package:rumaia_project/screens/user/my_request_screen.dart';
 import 'package:rumaia_project/screens/user/profile_screen.dart';
 import 'package:rumaia_project/screens/user/property_list.dart';
 import 'package:rumaia_project/screens/user/property_request_screen.dart';
 import 'package:rumaia_project/screens/widget/botnav.dart';
+import 'package:rumaia_project/screens/widget/splash_screen.dart';
+import 'package:rumaia_project/widgets/developer/botnavbar.dart';
+import 'package:rumaia_project/widgets/investor/bot_nav_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -21,10 +27,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Rumaia',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: const Color(0xFF2196F3),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF2196F3),
+          secondary: const Color(0xFF00BCD4),
+        ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        useMaterial3: true,
       ),
-      home: RoleSwitcherScreen(),
+      debugShowCheckedModeBanner: false,
+      home: const SplashScreen(), // Selalu mulai dari splash screen
     );
   }
 }
@@ -76,5 +88,60 @@ class _MainNavigationState extends State<MainNavigation> {
       default:
         return HomeScreen(onNavigate: _navigateFromHome);
     }
+  }
+}
+
+// Helper class untuk logout dari mana saja
+class AuthHelper {
+  // Logout function - hapus session tapi tetap simpan hasSeenOnboarding
+  static Future<void> logout(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    // Hapus data login tapi tetap simpan hasSeenOnboarding
+    await prefs.remove('userRole');
+    await prefs.remove('username');
+
+    if (!context.mounted) return;
+
+    // Kembali ke pilih role (skip onboarding)
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const RoleSwitcherScreen()),
+      (route) => false,
+    );
+  }
+
+  // Get user data dari SharedPreferences
+  static Future<Map<String, dynamic>> getUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    return {
+      'role': prefs.getString('userRole'),
+      'username': prefs.getString('username'),
+      'hasSeenOnboarding': prefs.getBool('hasSeenOnboarding') ?? false,
+    };
+  }
+
+  // Get dashboard widget berdasarkan role
+  static Widget getDashboardByRole(String role) {
+    switch (role) {
+      case 'Admin':
+        return const AdminDashboardScreen();
+      case 'Customer':
+        return const MainNavigation();
+      case 'Developer':
+        return const BotnavbarScreen();
+      case 'Property':
+        return const DashboardProperty();
+      case 'Investor':
+        return const InvestorBotNavBarScreen();
+      default:
+        return const RoleSwitcherScreen();
+    }
+  }
+
+  // Clear all data (untuk testing/reset)
+  static Future<void> clearAllData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
   }
 }
