@@ -1,5 +1,7 @@
 // [file name]: available_project_screen.dart
 // [file content begin]
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:rumaia_project/screens/developer/project_detail_screen.dart';
 import 'package:rumaia_project/screens/developer/project_funding_screen.dart'; // NEW

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rumaia_project/screens/auth/login.dart'; // Import LoginScreen
@@ -17,34 +19,22 @@ class _RoleSwitcherScreenState extends State<RoleSwitcherScreen>
   late Animation<Offset> _slideAnimation;
 
   final Map<String, Map<String, dynamic>> roles = {
-    'Admin': {
-      'icon': Icons.admin_panel_settings_rounded,
-      'color': const Color(0xFFFF6B6B), // Tetap merah
-      'gradient': const [Color(0xFFFF6B6B), Color(0xFFFF8E8E)], // Tetap merah
-      'description': 'Kelola sistem & pengguna',
-    },
     'Customer': {
       'icon': Icons.person_outline_rounded,
-      'color': const Color(0xFF4ECDC4), // Tetap hijau
-      'gradient': const [Color(0xFF4ECDC4), Color(0xFF44A8A0)], // Tetap hijau
+      'color': const Color(0xFF4ECDC4),
+      'gradient': const [Color(0xFF4ECDC4), Color(0xFF44A8A0)],
       'description': 'Jelajahi properti impian',
     },
     'Developer': {
       'icon': Icons.developer_board,
-      'color': const Color(0xFF9B59B6), // Tetap ungu
-      'gradient': const [Color(0xFF9B59B6), Color(0xFF8E44AD)], // Tetap ungu
-      'description': 'Bangun & kembangkan proyek',
-    },
-    'Property': {
-      'icon': Icons.apartment_rounded,
-      'color': const Color(0xFF5C6BC0), // Tetap biru
-      'gradient': const [Color(0xFF5C6BC0), Color(0xFF3F51B5)], // Tetap biru
-      'description': 'Atur properti Anda',
+      'color': const Color(0xFF9B59B6),
+      'gradient': const [Color(0xFF9B59B6), Color(0xFF8E44AD)],
+      'description': 'Bangun & kembangkan proyek\n(Verifikasi diperlukan)',
     },
     'Investor': {
       'icon': Icons.trending_up_rounded,
-      'color': const Color(0xFFFF9800), // Tetap orange
-      'gradient': const [Color(0xFFFF9800), Color(0xFFF57C00)], // Tetap orange
+      'color': const Color(0xFFFF9800),
+      'gradient': const [Color(0xFFFF9800), Color(0xFFF57C00)],
       'description': 'Monitor investasi properti',
     },
   };
@@ -133,29 +123,56 @@ class _RoleSwitcherScreenState extends State<RoleSwitcherScreen>
                     ),
                     child: Column(
                       children: [
-                        // Logo atau Icon dengan efek glow
+                        // Logo Rumaia dengan bentuk avatar yang clean
                         Container(
-                          padding: const EdgeInsets.all(20),
+                          width: 100,
+                          height: 100,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [
-                                color.primary.withOpacity(0.2),
-                                color.primary.withOpacity(0.05),
-                              ],
-                            ),
+                            color: Colors.white,
                             boxShadow: [
                               BoxShadow(
                                 color: color.primary.withOpacity(0.2),
-                                blurRadius: 30,
-                                spreadRadius: 5,
+                                blurRadius: 20,
+                                spreadRadius: 2,
+                              ),
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
                               ),
                             ],
+                            // Hapus gradient background yang membuat bingkai tebal
                           ),
-                          child: Icon(
-                            Icons.home_work_rounded,
-                            size: 56,
-                            color: color.primary,
+                          child: ClipOval(
+                            child: Image.asset(
+                              'assets/images/logo_rumaia_nofont.png',
+                              width: 90,
+                              height: 90,
+                              fit: BoxFit
+                                  .cover, // Ganti dari contain ke cover untuk fill penuh
+                              errorBuilder: (context, error, stackTrace) {
+                                // Fallback yang lebih clean
+                                return Container(
+                                  decoration: const BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Color(0xFF2196F3),
+                                        Color(0xFF00BCD4),
+                                      ],
+                                    ),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.home_work_rounded,
+                                    size: 50,
+                                    color: Colors.white,
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ),
                         const SizedBox(height: 24),

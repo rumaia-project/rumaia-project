@@ -2,8 +2,9 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:rumaia_project/main.dart';
 import 'package:rumaia_project/screens/admin/admin_dashboard.dart';
+// Tambahkan import untuk screen developer registration
+import 'package:rumaia_project/screens/developer/upload_documents_screen.dart';
 import 'package:rumaia_project/screens/property/dashboard_property.dart';
-import 'package:rumaia_project/widgets/developer/botnavbar.dart';
 import 'package:rumaia_project/widgets/investor/bot_nav_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -111,33 +112,72 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _navigateToDashboard() {
-    // Import dashboard sesuai role dari file asli
-    Widget destination;
-    switch (widget.selectedRole) {
-      case 'Admin':
-        destination = const AdminDashboardScreen(); // Import dari file asli
-        break;
-      case 'Customer':
-        destination = const MainNavigation(); // Import dari file asli
-        break;
-      case 'Developer':
-        destination = const BotnavbarScreen(); // Import dari file asli
-        break;
-      case 'Property':
-        destination = const DashboardProperty(); // Import dari file asli
-        break;
-      case 'Investor':
-        destination = const InvestorBotNavBarScreen(); // Import dari file asli
-        break;
-      default:
-        return;
-    }
+    // Untuk Developer, arahkan ke Upload Documents Screen dengan animasi slide
+    if (widget.selectedRole == 'Developer') {
+      Navigator.pushAndRemoveUntil(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              const UploadDocumentsScreen(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(1.0, 0.0);
+            const end = Offset.zero;
+            const curve = Curves.easeInOutQuart;
 
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (_) => destination),
-      (route) => false,
-    );
+            var tween = Tween(
+              begin: begin,
+              end: end,
+            ).chain(CurveTween(curve: curve));
+            var offsetAnimation = animation.drive(tween);
+
+            return SlideTransition(position: offsetAnimation, child: child);
+          },
+          transitionDuration: const Duration(milliseconds: 500),
+        ),
+        (route) => false,
+      );
+    } else {
+      // Untuk role lain, langsung ke dashboard dengan animasi default
+      Widget destination;
+      switch (widget.selectedRole) {
+        case 'Admin':
+          destination = const AdminDashboardScreen();
+          break;
+        case 'Customer':
+          destination = const MainNavigation();
+          break;
+        case 'Property':
+          destination = const DashboardProperty();
+          break;
+        case 'Investor':
+          destination = const InvestorBotNavBarScreen();
+          break;
+        default:
+          return;
+      }
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => destination,
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(1.0, 0.0);
+            const end = Offset.zero;
+            const curve = Curves.easeInOutQuart;
+
+            var tween = Tween(
+              begin: begin,
+              end: end,
+            ).chain(CurveTween(curve: curve));
+            var offsetAnimation = animation.drive(tween);
+
+            return SlideTransition(position: offsetAnimation, child: child);
+          },
+          transitionDuration: const Duration(milliseconds: 500),
+        ),
+        (route) => false,
+      );
+    }
   }
 
   @override
@@ -215,9 +255,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        const Text(
-                          'Masuk untuk melanjutkan',
-                          style: TextStyle(
+                        // Tambahkan info khusus untuk Developer
+                        Text(
+                          widget.selectedRole == 'Developer'
+                              ? 'Lengkapi verifikasi untuk memulai'
+                              : 'Masuk untuk melanjutkan',
+                          style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                             color: Colors.white70,
@@ -291,6 +334,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                             height: 1.4,
                                           ),
                                         ),
+                                        // Tambahkan info khusus untuk Developer
+                                        if (widget.selectedRole ==
+                                            'Developer') ...[
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            'Setelah login, lengkapi proses verifikasi',
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              color: roleData['color'],
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
                                       ],
                                     ),
                                   ),
@@ -441,9 +497,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                               ),
                                         ),
                                       )
-                                    : const Text(
-                                        'Masuk',
-                                        style: TextStyle(
+                                    : Text(
+                                        widget.selectedRole == 'Developer'
+                                            ? 'Masuk & Verifikasi'
+                                            : 'Masuk',
+                                        style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w700,
                                           letterSpacing: 0.5,
@@ -463,7 +521,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   FadeInUp(
                     delay: const Duration(milliseconds: 600),
                     child: Text(
-                      'Dengan masuk, Anda menyetujui\nSyarat & Ketentuan kami',
+                      widget.selectedRole == 'Developer'
+                          ? 'Dengan masuk, Anda menyetujui proses verifikasi\n dan Syarat & Ketentuan kami'
+                          : 'Dengan masuk, Anda menyetujui\nSyarat & Ketentuan kami',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 12,

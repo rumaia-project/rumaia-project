@@ -145,7 +145,7 @@ class _SplashScreenState extends State<SplashScreen>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Logo dengan animasi
+                  // Logo dengan animasi - GANTI DENGAN ASSETS GAMBAR
                   ScaleTransition(
                     scale: _scaleAnimation,
                     child: FadeIn(
@@ -163,11 +163,40 @@ class _SplashScreenState extends State<SplashScreen>
                               spreadRadius: 10,
                             ),
                           ],
+                          // Border untuk avatar effect
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.3),
+                            width: 3,
+                          ),
                         ),
-                        child: const Icon(
-                          Icons.home_work_rounded,
-                          size: 80,
-                          color: Color(0xFF2196F3),
+                        child: ClipOval(
+                          child: Image.asset(
+                            'assets/images/logo_rumaia_nofont.png',
+                            width: 120,
+                            height: 120,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              // Fallback jika gambar tidak ditemukan
+                              return Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Color(0xFF2196F3),
+                                      Color(0xFF00BCD4),
+                                    ],
+                                  ),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.home_work_rounded,
+                                  size: 60,
+                                  color: Colors.white,
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),
