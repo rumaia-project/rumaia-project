@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rumaia_project/main.dart';
 import 'package:rumaia_project/utils/investor/investor_color.dart';
 
 class InvestorHomeScreen extends StatefulWidget {
@@ -25,6 +26,18 @@ class _InvestorHomeScreenState extends State<InvestorHomeScreen> {
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
         ),
         centerTitle: true,
+        actions: [
+          // Logout Button
+          IconButton(
+            onPressed: () => AuthHelper.showLogoutDialog(context),
+            icon: const Icon(
+              Icons.logout_rounded,
+              color: Colors.grey,
+              size: 22,
+            ),
+            tooltip: 'Keluar Akun',
+          ),
+        ],
       ),
 
       // ======== MAIN BODY ========

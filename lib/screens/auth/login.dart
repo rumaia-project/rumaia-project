@@ -35,28 +35,28 @@ class _LoginScreenState extends State<LoginScreen> {
   final Map<String, Map<String, dynamic>> _roleData = {
     'Admin': {
       'icon': Icons.admin_panel_settings_rounded,
-      'color': const Color(0xFF2196F3),
-      'gradient': const [Color(0xFF2196F3), Color(0xFF1976D2)],
+      'color': const Color(0xFFFF6B6B),
+      'gradient': const [Color(0xFFFF6B6B), Color(0xFFFF8E8E)],
     },
     'Customer': {
       'icon': Icons.person_outline_rounded,
-      'color': const Color(0xFF00BCD4),
-      'gradient': const [Color(0xFF00BCD4), Color(0xFF0097A7)],
+      'color': const Color(0xFF4ECDC4),
+      'gradient': const [Color(0xFF4ECDC4), Color(0xFF44A8A0)],
     },
     'Developer': {
       'icon': Icons.developer_board,
-      'color': const Color(0xFF2196F3),
-      'gradient': const [Color(0xFF2196F3), Color(0xFF00BCD4)],
+      'color': const Color(0xFF9B59B6),
+      'gradient': const [Color(0xFF9B59B6), Color(0xFF8E44AD)],
     },
     'Property': {
       'icon': Icons.apartment_rounded,
-      'color': const Color(0xFF0097A7),
-      'gradient': const [Color(0xFF0097A7), Color(0xFF00838F)],
+      'color': const Color(0xFF5C6BC0),
+      'gradient': const [Color(0xFF5C6BC0), Color(0xFF3F51B5)],
     },
     'Investor': {
       'icon': Icons.trending_up_rounded,
-      'color': const Color(0xFF1976D2),
-      'gradient': const [Color(0xFF1976D2), Color(0xFF1565C0)],
+      'color': const Color(0xFFFF9800),
+      'gradient': const [Color(0xFFFF9800), Color(0xFFF57C00)],
     },
   };
 
@@ -81,8 +81,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (username == correctCredentials['username'] &&
         password == correctCredentials['password']) {
-      // Login berhasil - simpan role
+      // Login berhasil - simpan status login
       final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isLoggedIn', true);
       await prefs.setString('userRole', widget.selectedRole);
       await prefs.setString('username', username);
 

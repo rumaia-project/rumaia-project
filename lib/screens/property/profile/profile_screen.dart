@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rumaia_project/main.dart'; // Import AuthHelper
 
 import 'about_screen.dart';
 import 'edit_profile_screen.dart';
@@ -87,10 +88,10 @@ class ProfileScreen extends StatelessWidget {
 
             const SizedBox(height: 40),
 
-            // Tombol Keluar
+            // Tombol Keluar dengan AuthHelper
             InkWell(
               borderRadius: BorderRadius.circular(14),
-              onTap: () {},
+              onTap: () => AuthHelper.showLogoutDialog(context),
               child: Container(
                 height: 52,
                 decoration: BoxDecoration(

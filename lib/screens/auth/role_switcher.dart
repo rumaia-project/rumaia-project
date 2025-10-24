@@ -19,32 +19,32 @@ class _RoleSwitcherScreenState extends State<RoleSwitcherScreen>
   final Map<String, Map<String, dynamic>> roles = {
     'Admin': {
       'icon': Icons.admin_panel_settings_rounded,
-      'color': const Color(0xFFFF6B6B),
-      'gradient': const [Color(0xFFFF6B6B), Color(0xFFFF8E8E)],
+      'color': const Color(0xFFFF6B6B), // Tetap merah
+      'gradient': const [Color(0xFFFF6B6B), Color(0xFFFF8E8E)], // Tetap merah
       'description': 'Kelola sistem & pengguna',
     },
     'Customer': {
       'icon': Icons.person_outline_rounded,
-      'color': const Color(0xFF4ECDC4),
-      'gradient': const [Color(0xFF4ECDC4), Color(0xFF44A8A0)],
+      'color': const Color(0xFF4ECDC4), // Tetap hijau
+      'gradient': const [Color(0xFF4ECDC4), Color(0xFF44A8A0)], // Tetap hijau
       'description': 'Jelajahi properti impian',
     },
     'Developer': {
       'icon': Icons.developer_board,
-      'color': const Color(0xFF9B59B6),
-      'gradient': const [Color(0xFF9B59B6), Color(0xFF8E44AD)],
+      'color': const Color(0xFF9B59B6), // Tetap ungu
+      'gradient': const [Color(0xFF9B59B6), Color(0xFF8E44AD)], // Tetap ungu
       'description': 'Bangun & kembangkan proyek',
     },
     'Property': {
       'icon': Icons.apartment_rounded,
-      'color': const Color(0xFF5C6BC0),
-      'gradient': const [Color(0xFF5C6BC0), Color(0xFF3F51B5)],
+      'color': const Color(0xFF5C6BC0), // Tetap biru
+      'gradient': const [Color(0xFF5C6BC0), Color(0xFF3F51B5)], // Tetap biru
       'description': 'Atur properti Anda',
     },
     'Investor': {
       'icon': Icons.trending_up_rounded,
-      'color': const Color(0xFFFF9800),
-      'gradient': const [Color(0xFFFF9800), Color(0xFFF57C00)],
+      'color': const Color(0xFFFF9800), // Tetap orange
+      'gradient': const [Color(0xFFFF9800), Color(0xFFF57C00)], // Tetap orange
       'description': 'Monitor investasi properti',
     },
   };

@@ -92,12 +92,14 @@ class _MainNavigationState extends State<MainNavigation> {
 }
 
 // Helper class untuk logout dari mana saja
+// Helper class untuk logout dari mana saja
 class AuthHelper {
   // Logout function - hapus session tapi tetap simpan hasSeenOnboarding
   static Future<void> logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
 
     // Hapus data login tapi tetap simpan hasSeenOnboarding
+    await prefs.remove('isLoggedIn'); // TAMBAH INI
     await prefs.remove('userRole');
     await prefs.remove('username');
 
@@ -111,10 +113,53 @@ class AuthHelper {
     );
   }
 
+  // Show logout confirmation dialog
+  static Future<void> showLogoutDialog(BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Keluar Akun',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+          content: const Text(
+            'Apakah Anda yakin ingin keluar dari akun ini?',
+            style: TextStyle(fontSize: 16),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Batal', style: TextStyle(color: Colors.grey)),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Tutup dialog
+                logout(context); // Lakukan logout
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text('Keluar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   // Get user data dari SharedPreferences
   static Future<Map<String, dynamic>> getUserData() async {
     final prefs = await SharedPreferences.getInstance();
     return {
+      'isLoggedIn': prefs.getBool('isLoggedIn') ?? false, // TAMBAH INI
       'role': prefs.getString('userRole'),
       'username': prefs.getString('username'),
       'hasSeenOnboarding': prefs.getBool('hasSeenOnboarding') ?? false,

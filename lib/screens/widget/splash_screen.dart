@@ -1,7 +1,12 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:rumaia_project/screens/auth/role_switcher.dart'; // Import RoleSwitcherScreen
+import 'package:rumaia_project/main.dart';
+import 'package:rumaia_project/screens/admin/admin_dashboard.dart';
+import 'package:rumaia_project/screens/auth/role_switcher.dart';
+import 'package:rumaia_project/screens/property/dashboard_property.dart';
 import 'package:rumaia_project/screens/widget/onboarding.dart';
+import 'package:rumaia_project/widgets/developer/botnavbar.dart';
+import 'package:rumaia_project/widgets/investor/bot_nav_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -38,12 +43,16 @@ class _SplashScreenState extends State<SplashScreen>
 
     final prefs = await SharedPreferences.getInstance();
     final bool hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
+    final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
     final String? savedRole = prefs.getString('userRole');
 
     if (!mounted) return;
 
-    if (hasSeenOnboarding) {
-      // Sudah pernah onboarding, langsung ke RoleSwitcherScreen
+    if (isLoggedIn && savedRole != null) {
+      // User sudah login, langsung ke dashboard sesuai role
+      _navigateToDashboard(savedRole);
+    } else if (hasSeenOnboarding) {
+      // Sudah pernah onboarding tapi belum login
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const RoleSwitcherScreen()),
@@ -55,6 +64,35 @@ class _SplashScreenState extends State<SplashScreen>
         MaterialPageRoute(builder: (_) => const OnboardingScreen()),
       );
     }
+  }
+
+  void _navigateToDashboard(String role) {
+    // Import dashboard sesuai role
+    Widget destination;
+    switch (role) {
+      case 'Admin':
+        destination = const AdminDashboardScreen();
+        break;
+      case 'Customer':
+        destination = const MainNavigation();
+        break;
+      case 'Developer':
+        destination = const BotnavbarScreen();
+        break;
+      case 'Property':
+        destination = const DashboardProperty();
+        break;
+      case 'Investor':
+        destination = const InvestorBotNavBarScreen();
+        break;
+      default:
+        destination = const RoleSwitcherScreen();
+    }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => destination),
+    );
   }
 
   @override

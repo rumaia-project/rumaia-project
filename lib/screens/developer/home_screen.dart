@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:rumaia_project/main.dart';
 import 'package:rumaia_project/utils/developer/app_color.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -109,42 +110,68 @@ class _HomeScreenState extends State<HomeScreen>
                                 ),
                               ],
                             ),
-                            // Notification Bell with Badge
-                            Stack(
+                            // Notification Bell & Logout Button dengan style yang sama
+                            Row(
                               children: [
-                                Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: isDark
-                                        ? Colors.white.withOpacity(0.1)
-                                        : AppColor.primaryColor.withOpacity(
-                                            0.1,
-                                          ),
-                                    borderRadius: BorderRadius.circular(14),
-                                  ),
-                                  child: Icon(
-                                    Icons.notifications_rounded,
-                                    color: isDark
-                                        ? Colors.white
-                                        : AppColor.primaryColor,
-                                    size: 24,
-                                  ),
-                                ),
-                                Positioned(
-                                  right: 8,
-                                  top: 8,
-                                  child: Container(
-                                    width: 8,
-                                    height: 8,
-                                    decoration: BoxDecoration(
-                                      color: Colors.red,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
+                                // Notification Bell with Badge
+                                Stack(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
                                         color: isDark
-                                            ? const Color(0xFF1A1F3A)
-                                            : Colors.white,
-                                        width: 2,
+                                            ? Colors.white.withOpacity(0.1)
+                                            : AppColor.primaryColor.withOpacity(
+                                                0.1,
+                                              ),
+                                        borderRadius: BorderRadius.circular(14),
                                       ),
+                                      child: Icon(
+                                        Icons.notifications_rounded,
+                                        color: isDark
+                                            ? Colors.white
+                                            : AppColor.primaryColor,
+                                        size: 24,
+                                      ),
+                                    ),
+                                    Positioned(
+                                      right: 8,
+                                      top: 8,
+                                      child: Container(
+                                        width: 8,
+                                        height: 8,
+                                        decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: isDark
+                                                ? const Color(0xFF1A1F3A)
+                                                : Colors.white,
+                                            width: 2,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(width: 8),
+                                // Logout Button dengan ukuran yang sama - FIXED
+                                InkWell(
+                                  onTap: () =>
+                                      AuthHelper.showLogoutDialog(context),
+                                  borderRadius: BorderRadius.circular(14),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: isDark
+                                          ? Colors.white.withOpacity(0.1)
+                                          : Colors.red.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                    child: Icon(
+                                      Icons.logout_rounded,
+                                      color: isDark ? Colors.white : Colors.red,
+                                      size: 24,
                                     ),
                                   ),
                                 ),
@@ -216,6 +243,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
+  // ... (method-method lainnya tetap sama)
   // === Greeting Card ===
   Widget _buildGreetingCard(BuildContext context, bool isDark) {
     return Container(

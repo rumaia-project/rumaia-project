@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:rumaia_project/main.dart';
 
 class HomeScreen extends StatelessWidget {
   final Function(int)? onNavigate;
@@ -27,6 +28,11 @@ class HomeScreen extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.notifications_none, color: Colors.grey[700]),
             onPressed: () {},
+          ),
+          IconButton(
+            onPressed: () => AuthHelper.showLogoutDialog(context),
+            icon: const Icon(Icons.logout_rounded),
+            tooltip: 'Keluar Akun',
           ),
         ],
       ),
